@@ -74,7 +74,8 @@ def index(state:State)->Page:
         Text(state.error),
         Header("Schedulizer"),
         "Starting Week: ",
-        DateInput("day", state.start_date, on_change="change_date"),
+        DateInput("day", state.start_date),
+        Button("Go", "change_date"),
         "\n",
         Button("Add Event+", "event_form"),
         Button("Remove Event-", "remove_form"),
@@ -211,8 +212,10 @@ def enact_customs(state:State,start:str,end:str,r:str,g:str,b:str)->Page:
     WIPES THE USER'S PREVIOUS SCHEDULE
     '''
     if(start == end):
-        state.error = "error_NO_TIME_RANGE_POSSIBLE"
-        return customize_form(state)
+        state.r = r
+        state.g = g
+        state.b = b
+        return index(state)
     state.start_time = start
     state.end_time = end
     state.r = r
@@ -243,7 +246,7 @@ def convert_date_to_num(date:str):
     month = int(date[1])
     #the math formula: (year + year/4 + day - 1 (if leap year or Jan or Feb) + month constant) mod 7
     y = year//4
-    if(month <= 2 or year/4 == 0):
+    if(year/4 == 0):
         y = y-1
     y = y+day+year
     print(y)
@@ -301,4 +304,4 @@ def convert_day(day:str)->int:
 
 
         
-start_server(State([],"6:00AM","8:00PM",date.today(),0,255,255,255,""))
+start_server(State([],"6:00AM","8:00PM",date.today().isoformat(),0,255,255,255,""))
